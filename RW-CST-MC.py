@@ -23,6 +23,8 @@ async def on_ready():
     await client.change_presence(status=discord.Status.online, activity=discord.Game(name="RW CST Games!"))
     await rcon.open_connection()
     print("Ridgewater CST bot online!")
+
+# MINECRAFT
     
 @bot.command(description="Lists the current Minecraft day")
 async def day(i: di):
@@ -30,6 +32,15 @@ async def day(i: di):
     command = output.split(' ')
     day = command[-1]
     await i.response.send_message(f"The current day is {day}")
+    
+@bot.command(description="Get the IP of the server")
+async def ip(i:di, platform: typing.Literal['Java', "Bedrock"]):
+    if platform == "Java":
+        await i.response.send_message("The IP is `rw-cst.someminegame.net`.", ephemeral=True)
+    else:
+        await i.response.send_message("The IP is `br-rw-cst.someminegame.net` with port `19135`.", ephemeral=True)
+        
+# MINECRAFT EXTRAS
     
 @bot.command(description="Adds you to the whitelist")
 async def register(i: di, username: str, platform: typing.Literal['Java', 'Bedrock']):
@@ -79,10 +90,19 @@ async def register(i: di, username: str, platform: typing.Literal['Java', 'Bedro
         pass
     await i.user.edit(nick=username)
     await i.followup.send(f"You have been whitelisted and your Discord server nickname updated to match.\n`Username: {username}`")
-    
+
+# BOT
+
 @bot.command(description="Tests the Discord bot's response")
 async def test(i: di):
-    await bot.sync()
     await i.response.send_message(f"The bot is operational!")
+
+@bot.command(description="Syncs the bot's command tree to Discord")
+@commands.has_role("Bot Developer")
+async def update_command_tree(i: di):
+    await bot.sync()
+    await i.response.send_message("Updated the command tree.", ephemeral=True)
+
+# MISC
     
 client.run(bt.token)
