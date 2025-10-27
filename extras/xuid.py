@@ -1,3 +1,8 @@
+# All Credit For This Script Goes To Den Delimarsky (@DenDev on YouTube)
+# GitHub Source: https://github.com/OpenSpartan/xuid-resolver/tree/main
+#
+# Minor Modifications Were Made Below
+
 from msal import PublicClientApplication, SerializableTokenCache
 import os, atexit, requests
 import extras.bot as bt
