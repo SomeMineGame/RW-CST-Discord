@@ -2,3 +2,4 @@ extras/*
 !extras/xuid.py
 !extras/__init__.py
 cache.bin
+data.json
