@@ -6,31 +6,45 @@ from discord.ext import commands, tasks
 from extras import bot as bt
 from extras import xuid
 
-# Alias used in command arguments 
+# Alias Used In Command Arguments
 di = discord.Interaction
 
-# Sets the Required Intents
+# Sets The Required Intents
 intents = discord.Intents.all()
 intents.members = True
 intents.guilds = True
 
-# Sets up the bot user
+# Sets Up The Bot User
 client = discord.Client(intents=intents, help_command=None)
 bot = app_commands.CommandTree(client)
 
-# Sets up the Minecraft RCON connection
+# Sets Up The Minecraft RCON connection
 AsyncRCON.__init__(AsyncRCON, bt.MC.ip, bt.MC.password, max_command_retries=1)
 rcon = AsyncRCON(bt.MC.ip, bt.MC.password)
 
-# Runs on launch
+# Runs On Launch
 @client.event
 async def on_ready():
-    # Change Bot's user status
+    # Change Bot's User Status
     await client.change_presence(status=discord.Status.online, activity=discord.Game(name="RW CST Games!"))
-    # Opens connection to Minecraft RCON
+    # Opens Connection To Minecraft RCON
     await rcon.open_connection()
     print("Ridgewater CST bot online!")
 
+# Runs When A User Joins The Server
+@client.event
+async def on_join(member):
+    sayings = ['Make sure to have fun!', 'Welcome to the server!', 'Enjoy your stay!', 'Glad to have you here!', 'Welcome aboard!', 'Hope you have a great time here!', 'Aw man, no pizza for a party?']
+    # Random Color
+    r,g,b = random.randint(0,255),random.randint(0,255),random.randint(0,255)
+    # Creates Discord Color Object
+    colour = discord.Colour.from_rgb(r,g,b)
+    # Chooses A Random Saying
+    response = random.choice(sayings)
+    # Creates The Embed
+    embed = discord.Embed(title=f"Welcome {member.name}!",description=response,colour=colour)
+    channel = discord.utils.get(member.guild.channels, name="welcome")
+    await channel.send(embed=embed)
 
 # +------------------+
 # |MINECRAFT COMMANDS|
@@ -219,9 +233,16 @@ async def coinflip(i:di):
         
 @bot.command(description="Get the answer to a yes or no question")
 async def magic8ball(i: di, message:str):
-    responses = ["Maybe so, maybe not", "I think so!", "I think not!", "Oh no! Not ***THAT** question!", "Lol! What kind of question was that?", "Shut up! I'm tired.", "Joke's on you, it won't happen.", "Always", "Never", "Yeah", "IDK, YOU TELL *ME*", "No way!", "Totally bro", "Sorry but, no.", "Absolutely", "I hate my job because of that question", "Repeat and try again in simpler terms", "Error, response not clear.", "You are a dimwit for asking that.", "Why not", "Sure", "Uhhhh, no?", "Uhhhh, yes?", "How **DARE** you ask the beast of magic!", "Yes", "No", "Certainly", "That is uncertain", "It can happen", "It can happen... NOT", "Probably", "Probably not", "Repeat", "Goodbye, that response was stupid", "0% Chance", "25% Chance", "50% Chance", "75% Chance", "100% Chance", "Absolutely not", "You think ***I*** know the answer to that?"]
+    responses = ['Maybe so, maybe not', 'I think so!', "I think not!", "Oh no! Not ***THAT** question!", 'Lol! What kind of question was that?', "Shut up! I'm tired.", "Joke's on you, it won't happen.", "Always", "Never", "Yeah", "IDK, YOU TELL *ME*", "No way!", 'Totally bro', 'Sorry but, no.', 'Absolutely', 'I hate my job because of that question', 'Repeat and try again in simpler terms', 'Error, response not clear.', 'You are a dimwit for asking that.', 'Why not', 'Sure', 'Uhhhh, no?', 'Uhhhh, yes?', 'How **DARE** you ask the beast of magic!', "Yes", "No", "Certainly", "That is uncertain", "It can happen", 'It can happen... NOT', 'Probably', 'Probably not', 'Repeat', "Goodbye, that response was stupid", '0% Chance', "25% Chance", '50% Chance', '75% Chance', '100% Chance', 'Absolutely not', 'You think ***I*** know the answer to that?', 'I\'m going to say... OOOO LOOK, A CAT!']
+    # Random Color
+    r,g,b = random.randint(0,255),random.randint(0,255),random.randint(0,255)
+    # Creates Discord Color Object
+    colour = discord.Colour.from_rgb(r,g,b)
+    # Chooses A Random Response
     response = random.choice(responses)
-    await i.response.send_message(response)
+    # Creates The Embed
+    embed = discord.Embed(title=message,description=response,colour=colour)
+    await i.response.send_message(embed=embed)
     
 @bot.command(description="Rock Paper Scissors against the bot")
 async def rps(i: di, choice: typing.Literal['Rock', 'Paper', 'Scissors']):
